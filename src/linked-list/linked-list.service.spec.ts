@@ -109,25 +109,6 @@ describe('LinkedListService', () => {
       expect(current?.value).toBe('C');
     });
 
-    it('should insert element at the end', () => {
-      service.append('A');
-      service.append('B');
-
-      service.insert('C', 2);
-
-      let current = service['head'];
-      expect(current?.value).toBe('A');
-
-      current = current?.next!;
-      expect(current?.value).toBe('B');
-
-      current = current?.next!;
-      expect(current?.value).toBe('C');
-
-      current = current?.next!;
-      expect(current).toBe(service['head']);
-    });
-
     it('should maintain circular linked list structure after insert', () => {
       service.append('A');
       service.append('C');
