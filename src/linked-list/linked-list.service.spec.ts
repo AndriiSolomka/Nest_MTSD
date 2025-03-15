@@ -49,7 +49,7 @@ describe('LinkedListService', () => {
       service.append('Y');
       service.append('Z');
 
-      let current = service['head']; 
+      let current = service['head'];
       expect(current?.value).toBe('X');
 
       current = current?.next!;
@@ -59,13 +59,91 @@ describe('LinkedListService', () => {
       expect(current?.value).toBe('Z');
 
       current = current?.next!;
-      expect(current).toBe(service['head']); 
+      expect(current).toBe(service['head']);
     });
-    
+
     it('should throw Error if element is not a single character', () => {
       expect(() => service.append('abc')).toThrow(Error);
       expect(() => service.append('ABS')).toThrow(Error);
       expect(() => service.append('')).toThrow(Error);
+    });
+  });
+
+  describe('insert', () => {
+    it('should throw Error if element is not a single character', () => {
+      expect(() => service.insert('abc', 0)).toThrow(Error);
+      expect(() => service.insert('ABS', 0)).toThrow(Error);
+      expect(() => service.insert('', 0)).toThrow(Error);
+    });
+
+    it('should throw Error if index incorrect', () => {
+      service.append('A');
+      service.append('b');
+      service.append('C');
+
+      expect(() => service.insert('a', 5)).toThrow(Error);
+      expect(() => service.insert('a', -1)).toThrow(Error);
+    });
+
+    it('should insert element at the beginning', () => {
+      service.append('B');
+      service.append('C');
+
+      service.insert('A', 0);
+      expect(service['head']?.value).toBe('A');
+    });
+
+    it('should insert element in the middle', () => {
+      service.append('A');
+      service.append('C');
+
+      service.insert('B', 1);
+
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+
+      current = current?.next!;
+      expect(current?.value).toBe('B');
+
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+    });
+
+    it('should insert element at the end', () => {
+      service.append('A');
+      service.append('B');
+
+      service.insert('C', 2);
+
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+
+      current = current?.next!;
+      expect(current?.value).toBe('B');
+
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+
+      current = current?.next!;
+      expect(current).toBe(service['head']);
+    });
+
+    it('should maintain circular linked list structure after insert', () => {
+      service.append('A');
+      service.append('C');
+      service.insert('B', 1);
+
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+
+      current = current?.next!;
+      expect(current?.value).toBe('B');
+
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+
+      current = current?.next!;
+      expect(current).toBe(service['head']);
     });
   });
 });
