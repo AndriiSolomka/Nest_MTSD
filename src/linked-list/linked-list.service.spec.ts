@@ -127,4 +127,67 @@ describe('LinkedListService', () => {
       expect(current).toBe(service['head']);
     });
   });
+
+  describe('delete', () => {
+    it('should throw an error if index is out of bounds', () => {
+      expect(() => service.delete(0)).toThrow(Error);
+      service.append('A');
+      expect(() => service.delete(1)).toThrow(Error);
+      expect(() => service.delete(-1)).toThrow(Error);
+    });
+
+    it('should delete the only element in the list', () => {
+      service.append('A');
+      expect(service.delete(0)).toBe('A');
+      expect(service.length()).toBe(0);
+      expect(service['head']).toBeNull();
+    });
+
+    it('should delete the first element and update head', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+
+      expect(service.delete(0)).toBe('A');
+      expect(service['head']?.value).toBe('B');
+      expect(service.length()).toBe(2);
+      expect(service['head']?.next?.next).toBe(service['head']);
+    });
+
+    it('should delete the last element and maintain circular structure', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+
+      expect(service.delete(2)).toBe('C');
+      expect(service.length()).toBe(2);
+
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+
+      current = current?.next!;
+      expect(current?.value).toBe('B');
+
+      current = current?.next!;
+      expect(current).toBe(service['head']);
+    });
+
+    it('should delete an element from the middle of the list', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+
+      expect(service.delete(1)).toBe('B');
+      expect(service.length()).toBe(2);
+
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+
+      current = current?.next!;
+      expect(current).toBe(service['head']);
+    });
+  });
 });
