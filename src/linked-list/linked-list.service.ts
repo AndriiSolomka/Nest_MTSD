@@ -76,6 +76,41 @@ export class LinkedListService {
     prev.next = newNode;
   }
 
+  delete(index: number): string {
+    this.checkIndex(index);
+    if (!this.head) throw new Error('List is empty');
+
+    let deletedValue: string;
+
+    if (index === 0) {
+      deletedValue = this.head.value;
+
+      if (this.head.next === this.head) {
+        this.head = null;
+        return deletedValue;
+      }
+
+      let tail = this.head;
+      while (tail.next !== this.head) {
+        tail = tail.next!;
+      }
+
+      this.head = this.head.next;
+      tail.next = this.head;
+      return deletedValue;
+    }
+
+    let prev = this.head;
+    for (let i = 0; i < index - 1; i++) {
+      prev = prev.next!;
+    }
+
+    deletedValue = prev.next!.value;
+    prev.next = prev.next!.next;
+
+    return deletedValue;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
