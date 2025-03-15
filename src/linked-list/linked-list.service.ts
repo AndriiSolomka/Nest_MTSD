@@ -44,7 +44,44 @@ export class LinkedListService {
     }
   }
 
+  insert(element: string, index: number) {
+    this.checkElement(element);
+    this.checkIndex(index);
+
+    const newNode = new Node(element);
+
+    if (!this.head) {
+      this.head = newNode;
+      this.head.next = this.head;
+      return;
+    }
+
+    if (index === 0) {
+      let tail = this.head;
+      while (tail.next !== this.head) {
+        tail = tail.next!;
+      }
+      newNode.next = this.head;
+      tail.next = newNode;
+      this.head = newNode;
+      return;
+    }
+
+    let prev = this.head;
+    for (let i = 0; i < index - 1; i++) {
+      prev = prev.next!;
+    }
+
+    newNode.next = prev.next;
+    prev.next = newNode;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
+  }
+
+  checkIndex(index: number) {
+    const listLength = this.length();
+    if (index < 0 || index > listLength) throw new Error('Invalid index');
   }
 }
