@@ -81,7 +81,7 @@ export class LinkedListService {
   }
 
   checkIndex(index: number) {
-    const listLength = this.length();
+    const listLength = this.length() - 1;
     if (index < 0 || index > listLength) throw new Error('Invalid index');
   }
 }
