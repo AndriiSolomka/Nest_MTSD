@@ -278,12 +278,6 @@ describe('LinkedListService', () => {
   });
 
   describe('get', () => {
-    let service: LinkedListService;
-
-    beforeEach(() => {
-      service = new LinkedListService();
-    });
-
     it('should throw an error if index is negative', () => {
       service.append('A');
       expect(() => service.get(-1)).toThrow(Error);
@@ -310,48 +304,71 @@ describe('LinkedListService', () => {
     });
   });
 
+  describe('findFirst', () => {
+    it('should return -1 if the list is empty', () => {
+      expect(service.findFirst('A')).toBe(-1);
+    });
+
+    it('should return the correct index when the element is found', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+
+      expect(service.findFirst('A')).toBe(0);
+      expect(service.findFirst('B')).toBe(1);
+      expect(service.findFirst('C')).toBe(2);
+    });
+
+    it('should return -1 if the element is not in the list', () => {
+      service.append('X');
+      service.append('Y');
+
+      expect(service.findFirst('Z')).toBe(-1);
+    });
+  });
+
   describe('clone', () => {
     let service: LinkedListService;
-  
+
     beforeEach(() => {
       service = new LinkedListService();
     });
-  
+
     it('should return an empty list if the original list is empty', () => {
       const clonedList = service.clone();
       expect(clonedList.length()).toBe(0);
     });
-  
+
     it('should create a new list with the same elements', () => {
       service.append('A');
       service.append('B');
       service.append('C');
-  
+
       const clonedList = service.clone();
-  
+
       expect(clonedList.length()).toBe(3);
       expect(clonedList.get(0)).toBe('A');
       expect(clonedList.get(1)).toBe('B');
       expect(clonedList.get(2)).toBe('C');
     });
-  
+
     it('should not modify the original list when modifying the cloned list', () => {
       service.append('X');
       service.append('Y');
-  
+
       const clonedList = service.clone();
       clonedList.append('Z');
-  
+
       expect(service.length()).toBe(2);
       expect(clonedList.length()).toBe(3);
     });
-  
+
     it('should maintain circular linked list structure in the clone', () => {
       service.append('A');
       service.append('B');
-  
+
       const clonedList = service.clone();
-      
+
       expect(clonedList.get(0)).toBe('A');
       expect(clonedList.get(1)).toBe('B');
     });
