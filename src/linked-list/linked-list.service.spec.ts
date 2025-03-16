@@ -197,6 +197,46 @@ describe('LinkedListService', () => {
     });
   });
 
+  describe('reverse', () => {
+    it('should do nothing for an empty list', () => {
+      service.reverse();
+      expect(service.length()).toBe(0);
+    });
+
+    it('should do nothing for a single-element list', () => {
+      service.append('A');
+      service.reverse();
+      expect(service.get(0)).toBe('A');
+    });
+
+    it('should reverse a multi-element list', () => {
+      fillList('A', 'B', 'C', 'D');
+      service.reverse();
+
+      expect(service.get(0)).toBe('D');
+      expect(service.get(1)).toBe('C');
+      expect(service.get(2)).toBe('B');
+      expect(service.get(3)).toBe('A');
+    });
+
+    it('should maintain circular linked list structure after reverse', () => {
+      fillList('X', 'Y', 'Z');
+      service.reverse();
+
+      let current = service['head'];
+      expect(current?.value).toBe('Z');
+
+      current = current?.next!;
+      expect(current?.value).toBe('Y');
+
+      current = current?.next!;
+      expect(current?.value).toBe('X');
+
+      current = current?.next!;
+      expect(current).toBe(service['head']);
+    });
+  });
+
   describe('findFirst', () => {
     it('should return -1 if the list is empty', () => {
       expect(service.findFirst('A')).toBe(-1);
