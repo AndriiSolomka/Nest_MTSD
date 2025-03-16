@@ -1,0 +1,12 @@
+services:
+  node-server:
+    container_name: node-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/home/node/app
+      - /home/node/app/node_modules
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
