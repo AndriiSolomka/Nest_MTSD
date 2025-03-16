@@ -190,4 +190,90 @@ describe('LinkedListService', () => {
       expect(current).toBe(service['head']);
     });
   });
+
+  describe('deleteAll', () => {
+    it('should do nothing if the list is empty', () => {
+      service.deleteAll('A');
+      expect(service.length()).toBe(0);
+    });
+  
+    it('should do nothing if element is not in the list', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+  
+      service.deleteAll('X');
+      expect(service.length()).toBe(3);
+    });
+  
+    it('should delete a single occurrence of an element', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+  
+      service.deleteAll('B');
+      expect(service.length()).toBe(2);
+  
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+  
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+  
+      current = current?.next!;
+      expect(current).toBe(service['head']); // Перевірка циклічності
+    });
+  
+    it('should delete multiple occurrences of an element', () => {
+      service.append('A');
+      service.append('B');
+      service.append('B');
+      service.append('C');
+  
+      service.deleteAll('B');
+      expect(service.length()).toBe(2);
+  
+      let current = service['head'];
+      expect(current?.value).toBe('A');
+  
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+  
+      current = current?.next!;
+      expect(current).toBe(service['head']);
+    });
+  
+    it('should delete all occurrences and leave an empty list', () => {
+      service.append('A');
+      service.append('A');
+      service.append('A');
+  
+      service.deleteAll('A');
+      expect(service.length()).toBe(0);
+      expect(service['head']).toBeNull();
+    });
+  
+    it('should delete all occurrences and update head properly', () => {
+      service.append('B');
+      service.append('A');
+      service.append('C');
+      service.append('A');
+      service.append('D');
+  
+      service.deleteAll('A');
+      expect(service.length()).toBe(3);
+  
+      let current = service['head'];
+      expect(current?.value).toBe('B');
+  
+      current = current?.next!;
+      expect(current?.value).toBe('C');
+  
+      current = current?.next!;
+      expect(current?.value).toBe('D');
+  
+      current = current?.next!;
+      expect(current).toBe(service['head']); // Перевірка циклічності
+    });
+  });
 });
