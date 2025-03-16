@@ -169,6 +169,22 @@ export class LinkedListService {
     return newList;
   }
 
+  findFirst(element: string): number {
+    this.checkElement(element);
+    if (!this.head) return -1;
+
+    let index = 0;
+    let current = this.head;
+
+    do {
+      if (current.value === element) return index;
+      index++;
+      current = current.next!;
+    } while (current !== this.head);
+
+    return -1;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
