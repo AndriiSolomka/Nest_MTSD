@@ -15,7 +15,7 @@ export class LinkedListService {
   private size = 0;
 
   length(): number {
-    return this.size;
+    return -this.size;
   }
 
   isEmpty(): boolean {
