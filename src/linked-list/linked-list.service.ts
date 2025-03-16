@@ -143,6 +143,19 @@ export class LinkedListService {
     }
   }
 
+  get(index: number): string {
+    this.checkIndex(index);
+
+    if (!this.head) throw new Error('List is empty');
+
+    let current = this.head;
+    for (let i = 0; i < index; i++) {
+      current = current.next!;
+    }
+
+    return current.value;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
