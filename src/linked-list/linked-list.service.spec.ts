@@ -373,4 +373,36 @@ describe('LinkedListService', () => {
       expect(clonedList.get(1)).toBe('B');
     });
   });
+
+  describe('findLast', () => {
+    it('should return -1 if the list is empty', () => {
+      expect(service.findLast('A')).toBe(-1);
+    });
+
+    it('should return the correct index when the element is found once', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+
+      expect(service.findLast('A')).toBe(0);
+      expect(service.findLast('B')).toBe(1);
+      expect(service.findLast('C')).toBe(2);
+    });
+
+    it('should return -1 if the element is not in the list', () => {
+      service.append('X');
+      service.append('Y');
+
+      expect(service.findLast('Z')).toBe(-1);
+    });
+
+    it('should return the last occurrence of the element', () => {
+      service.append('A');
+      service.append('B');
+      service.append('A');
+      service.append('C');
+
+      expect(service.findLast('A')).toBe(2);
+    });
+  });
 });
