@@ -156,6 +156,19 @@ export class LinkedListService {
     return current.value;
   }
 
+  clone(): LinkedListService {
+    const newList = new LinkedListService();
+    if (!this.head) return newList;
+
+    let current = this.head;
+    do {
+      newList.append(current.value);
+      current = current.next!;
+    } while (current !== this.head);
+
+    return newList;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
