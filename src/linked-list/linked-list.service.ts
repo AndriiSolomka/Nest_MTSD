@@ -202,6 +202,10 @@ export class LinkedListService {
     return lastIndex;
   }
 
+  clear(): void {
+    this.head = null;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
