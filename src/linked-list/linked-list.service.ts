@@ -12,51 +12,30 @@ class Node {
 @Injectable()
 export class LinkedListService {
   private head: Node | null = null;
+  private size = 0;
 
-  length() {
-    if (!this.head) return 0;
+  length(): number {
+    return this.size;
+  }
 
-    let count = 0;
-    let current: Node | null = this.head;
-
-    do {
-      count++;
-      if (!current.next) break;
-      current = current.next;
-    } while (current !== this.head);
-
-    return count;
+  isEmpty(): boolean {
+    return this.size === 0;
   }
 
   append(element: string): void {
-    this.checkElement(element);
-    const newNode = new Node(element);
-    if (!this.head) {
-      this.head = newNode;
-      this.head.next = this.head;
-    } else {
-      let current = this.head;
-      while (current.next !== this.head) {
-        current = current.next!;
-      }
-      current.next = newNode;
-      newNode.next = this.head;
-    }
+    this.insert(element, this.size);
   }
 
-  insert(element: string, index: number) {
+  insert(element: string, index: number): void {
     this.checkElement(element);
-    this.checkIndex(index);
+    this.checkIndex(index, true);
 
     const newNode = new Node(element);
 
     if (!this.head) {
       this.head = newNode;
       this.head.next = this.head;
-      return;
-    }
-
-    if (index === 0) {
+    } else if (index === 0) {
       let tail = this.head;
       while (tail.next !== this.head) {
         tail = tail.next!;
@@ -64,16 +43,16 @@ export class LinkedListService {
       newNode.next = this.head;
       tail.next = newNode;
       this.head = newNode;
-      return;
+    } else {
+      let prev = this.head;
+      for (let i = 0; i < index - 1; i++) {
+        prev = prev.next!;
+      }
+      newNode.next = prev.next;
+      prev.next = newNode;
     }
 
-    let prev = this.head;
-    for (let i = 0; i < index - 1; i++) {
-      prev = prev.next!;
-    }
-
-    newNode.next = prev.next;
-    prev.next = newNode;
+    this.size++;
   }
 
   delete(index: number): string {
@@ -84,30 +63,26 @@ export class LinkedListService {
 
     if (index === 0) {
       deletedValue = this.head.value;
-
       if (this.head.next === this.head) {
         this.head = null;
-        return deletedValue;
+      } else {
+        let tail = this.head;
+        while (tail.next !== this.head) {
+          tail = tail.next!;
+        }
+        this.head = this.head.next;
+        tail.next = this.head;
       }
-
-      let tail = this.head;
-      while (tail.next !== this.head) {
-        tail = tail.next!;
+    } else {
+      let prev = this.head;
+      for (let i = 0; i < index - 1; i++) {
+        prev = prev.next!;
       }
-
-      this.head = this.head.next;
-      tail.next = this.head;
-      return deletedValue;
+      deletedValue = prev.next!.value;
+      prev.next = prev.next?.next ?? this.head;
     }
 
-    let prev = this.head;
-    for (let i = 0; i < index - 1; i++) {
-      prev = prev.next!;
-    }
-
-    deletedValue = prev.next!.value;
-    prev.next = prev.next!.next;
-
+    this.size--;
     return deletedValue;
   }
 
@@ -132,6 +107,7 @@ export class LinkedListService {
           prev!.next = current.next;
           current = current.next!;
         }
+        this.size--;
       } else {
         prev = current;
         current = current.next!;
@@ -140,12 +116,18 @@ export class LinkedListService {
 
     if (this.head?.value === element) {
       this.head = null;
+      this.size = 0;
+    } else {
+      tail = this.head;
+      while (tail.next !== this.head) {
+        tail = tail.next!;
+      }
+      tail.next = this.head;
     }
   }
 
   get(index: number): string {
     this.checkIndex(index);
-
     if (!this.head) throw new Error('List is empty');
 
     let current = this.head;
@@ -204,14 +186,15 @@ export class LinkedListService {
 
   clear(): void {
     this.head = null;
+    this.size = 0;
   }
 
   extend(otherList: LinkedListService): void {
-    if (!otherList.head) return; 
-  
+    if (!otherList.head) return;
+
     let current = otherList.head;
     do {
-      this.append(current.value); 
+      this.append(current.value);
       current = current.next!;
     } while (current !== otherList.head);
   }
@@ -220,8 +203,10 @@ export class LinkedListService {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
 
-  checkIndex(index: number) {
-    const listLength = this.length() - 1;
-    if (index < 0 || index > listLength) throw new Error('Invalid index');
+  private checkIndex(index: number, allowEqual = false): void {
+    const maxIndex = allowEqual ? this.size : this.size - 1;
+    if (index < 0 || index > maxIndex) {
+      throw new Error('Invalid index');
+    }
   }
 }
