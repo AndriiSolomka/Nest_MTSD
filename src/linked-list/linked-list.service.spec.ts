@@ -417,4 +417,35 @@ describe('LinkedListService', () => {
       expect(service.length()).toBe(0);
     });
   });
+
+  describe('extend', () => {
+    let list1: LinkedListService;
+    let list2: LinkedListService;
+
+    beforeEach(() => {
+      list1 = new LinkedListService();
+      list2 = new LinkedListService();
+    });
+
+    it('should do nothing if the second list is empty', () => {
+      list1.append('A');
+      list1.extend(list2);
+
+      expect(list1.length()).toBe(1);
+      expect(list1.get(0)).toBe('A');
+    });
+
+    it('should copy all elements from another list', () => {
+      list1.append('A');
+      list2.append('B');
+      list2.append('C');
+
+      list1.extend(list2);
+
+      expect(list1.length()).toBe(3);
+      expect(list1.get(0)).toBe('A');
+      expect(list1.get(1)).toBe('B');
+      expect(list1.get(2)).toBe('C');
+    });
+  });
 });
