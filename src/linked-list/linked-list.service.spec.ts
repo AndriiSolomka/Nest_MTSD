@@ -405,4 +405,16 @@ describe('LinkedListService', () => {
       expect(service.findLast('A')).toBe(2);
     });
   });
+
+  describe('clear', () => {
+    it('should remove all elements from the list', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+
+      expect(service.length()).toBe(3);
+      service.clear();
+      expect(service.length()).toBe(0);
+    });
+  });
 });
