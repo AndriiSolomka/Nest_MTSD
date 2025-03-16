@@ -111,6 +111,38 @@ export class LinkedListService {
     return deletedValue;
   }
 
+  deleteAll(element: string): void {
+    if (!this.head) return;
+
+    let current = this.head;
+    let prev: Node | null = null;
+    let tail = this.head;
+
+    while (tail.next !== this.head) {
+      tail = tail.next!;
+    }
+
+    do {
+      if (current.value === element) {
+        if (current === this.head) {
+          this.head = this.head.next;
+          tail.next = this.head;
+          current = this.head!;
+        } else {
+          prev!.next = current.next;
+          current = current.next!;
+        }
+      } else {
+        prev = current;
+        current = current.next!;
+      }
+    } while (current !== this.head);
+
+    if (this.head?.value === element) {
+      this.head = null;
+    }
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
