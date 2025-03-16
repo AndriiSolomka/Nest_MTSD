@@ -185,6 +185,23 @@ export class LinkedListService {
     return -1;
   }
 
+  findLast(element: string): number {
+    this.checkElement(element);
+    if (!this.head) return -1;
+
+    let index = 0;
+    let lastIndex = -1;
+    let current = this.head;
+
+    do {
+      if (current.value === element) lastIndex = index;
+      index++;
+      current = current.next!;
+    } while (current !== this.head);
+
+    return lastIndex;
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
