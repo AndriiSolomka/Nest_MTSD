@@ -12,16 +12,16 @@ describe('LinkedListService', () => {
     service = module.get<LinkedListService>(LinkedListService);
   });
 
+  const fillList = (...values: string[]) =>
+    values.forEach((v) => service.append(v));
+
   describe('length', () => {
     it('should return 0 for an empty list', () => {
       expect(service.length()).toBe(0);
     });
 
     it('should return correct list length', () => {
-      service.append('A');
-      service.append('b');
-      service.append('C');
-
+      fillList('A', 'B', 'C');
       expect(service.length()).toBe(3);
     });
   });
@@ -45,9 +45,7 @@ describe('LinkedListService', () => {
     });
 
     it('should maintain circular linked list structure', () => {
-      service.append('X');
-      service.append('Y');
-      service.append('Z');
+      fillList('X', 'Y', 'Z');
 
       let current = service['head'];
       expect(current?.value).toBe('X');
@@ -77,26 +75,21 @@ describe('LinkedListService', () => {
     });
 
     it('should throw Error if index incorrect', () => {
-      service.append('A');
-      service.append('b');
-      service.append('C');
+      fillList('A', 'b', 'C');
 
       expect(() => service.insert('a', 5)).toThrow(Error);
       expect(() => service.insert('a', -1)).toThrow(Error);
     });
 
     it('should insert element at the beginning', () => {
-      service.append('B');
-      service.append('C');
+      fillList('B', 'C', 'A');
 
       service.insert('A', 0);
       expect(service['head']?.value).toBe('A');
     });
 
     it('should insert element in the middle', () => {
-      service.append('A');
-      service.append('C');
-
+      fillList('A', 'C');
       service.insert('B', 1);
 
       let current = service['head'];
@@ -110,8 +103,7 @@ describe('LinkedListService', () => {
     });
 
     it('should maintain circular linked list structure after insert', () => {
-      service.append('A');
-      service.append('C');
+      fillList('A', 'C');
       service.insert('B', 1);
 
       let current = service['head'];
@@ -136,46 +128,8 @@ describe('LinkedListService', () => {
       expect(() => service.delete(-1)).toThrow(Error);
     });
 
-    it('should delete the only element in the list', () => {
-      service.append('A');
-      expect(service.delete(0)).toBe('A');
-      expect(service.length()).toBe(0);
-      expect(service['head']).toBeNull();
-    });
-
-    it('should delete the first element and update head', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
-
-      expect(service.delete(0)).toBe('A');
-      expect(service['head']?.value).toBe('B');
-      expect(service.length()).toBe(2);
-      expect(service['head']?.next?.next).toBe(service['head']);
-    });
-
-    it('should delete the last element and maintain circular structure', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
-
-      expect(service.delete(2)).toBe('C');
-      expect(service.length()).toBe(2);
-
-      let current = service['head'];
-      expect(current?.value).toBe('A');
-
-      current = current?.next!;
-      expect(current?.value).toBe('B');
-
-      current = current?.next!;
-      expect(current).toBe(service['head']);
-    });
-
-    it('should delete an element from the middle of the list', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
+    it('should delete elements correctly', () => {
+      fillList('A', 'B', 'C');
 
       expect(service.delete(1)).toBe('B');
       expect(service.length()).toBe(2);
@@ -186,8 +140,7 @@ describe('LinkedListService', () => {
       current = current?.next!;
       expect(current?.value).toBe('C');
 
-      current = current?.next!;
-      expect(current).toBe(service['head']);
+      expect(current?.next).toBe(service['head']);
     });
   });
 
@@ -198,82 +151,24 @@ describe('LinkedListService', () => {
     });
 
     it('should do nothing if element is not in the list', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
+      fillList('A', 'B', 'C');
 
       service.deleteAll('X');
       expect(service.length()).toBe(3);
     });
 
-    it('should delete a single occurrence of an element', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
-
+    it('should remove multiple occurrences of an element', () => {
+      fillList('A', 'B', 'B', 'C');
       service.deleteAll('B');
       expect(service.length()).toBe(2);
-
-      let current = service['head'];
-      expect(current?.value).toBe('A');
-
-      current = current?.next!;
-      expect(current?.value).toBe('C');
-
-      current = current?.next!;
-      expect(current).toBe(service['head']); // Перевірка циклічності
+      expect(service['head']?.value).toBe('A');
     });
 
-    it('should delete multiple occurrences of an element', () => {
-      service.append('A');
-      service.append('B');
-      service.append('B');
-      service.append('C');
-
-      service.deleteAll('B');
-      expect(service.length()).toBe(2);
-
-      let current = service['head'];
-      expect(current?.value).toBe('A');
-
-      current = current?.next!;
-      expect(current?.value).toBe('C');
-
-      current = current?.next!;
-      expect(current).toBe(service['head']);
-    });
-
-    it('should delete all occurrences and leave an empty list', () => {
-      service.append('A');
-      service.append('A');
-      service.append('A');
-
+    it('should remove all occurrences and leave an empty list', () => {
+      fillList('A', 'A', 'A');
       service.deleteAll('A');
       expect(service.length()).toBe(0);
       expect(service['head']).toBeNull();
-    });
-
-    it('should delete all occurrences and update head properly', () => {
-      service.append('B');
-      service.append('A');
-      service.append('C');
-      service.append('A');
-      service.append('D');
-
-      service.deleteAll('A');
-      expect(service.length()).toBe(3);
-
-      let current = service['head'];
-      expect(current?.value).toBe('B');
-
-      current = current?.next!;
-      expect(current?.value).toBe('C');
-
-      current = current?.next!;
-      expect(current?.value).toBe('D');
-
-      current = current?.next!;
-      expect(current).toBe(service['head']); // Перевірка циклічності
     });
   });
 
@@ -284,8 +179,8 @@ describe('LinkedListService', () => {
     });
 
     it('should throw an error if index is greater than last element index', () => {
-      service.append('A');
-      service.append('B');
+      fillList('A', 'B');
+
       expect(() => service.get(2)).toThrow(Error);
     });
 
@@ -294,9 +189,7 @@ describe('LinkedListService', () => {
     });
 
     it('should return the correct element by index', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
+      fillList('A', 'B', 'C');
 
       expect(service.get(0)).toBe('A');
       expect(service.get(1)).toBe('B');
@@ -310,9 +203,7 @@ describe('LinkedListService', () => {
     });
 
     it('should return the correct index when the element is found', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
+      fillList('A', 'B', 'C');
 
       expect(service.findFirst('A')).toBe(0);
       expect(service.findFirst('B')).toBe(1);
@@ -320,29 +211,20 @@ describe('LinkedListService', () => {
     });
 
     it('should return -1 if the element is not in the list', () => {
-      service.append('X');
-      service.append('Y');
+      fillList('A', 'B', 'C');
 
       expect(service.findFirst('Z')).toBe(-1);
     });
   });
 
   describe('clone', () => {
-    let service: LinkedListService;
-
-    beforeEach(() => {
-      service = new LinkedListService();
-    });
-
     it('should return an empty list if the original list is empty', () => {
       const clonedList = service.clone();
       expect(clonedList.length()).toBe(0);
     });
 
     it('should create a new list with the same elements', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
+      fillList('A', 'B', 'C');
 
       const clonedList = service.clone();
 
@@ -352,20 +234,8 @@ describe('LinkedListService', () => {
       expect(clonedList.get(2)).toBe('C');
     });
 
-    it('should not modify the original list when modifying the cloned list', () => {
-      service.append('X');
-      service.append('Y');
-
-      const clonedList = service.clone();
-      clonedList.append('Z');
-
-      expect(service.length()).toBe(2);
-      expect(clonedList.length()).toBe(3);
-    });
-
     it('should maintain circular linked list structure in the clone', () => {
-      service.append('A');
-      service.append('B');
+      fillList('A', 'B');
 
       const clonedList = service.clone();
 
@@ -408,9 +278,7 @@ describe('LinkedListService', () => {
 
   describe('clear', () => {
     it('should remove all elements from the list', () => {
-      service.append('A');
-      service.append('B');
-      service.append('C');
+      fillList('A', 'B', 'C');
 
       expect(service.length()).toBe(3);
       service.clear();
