@@ -151,6 +151,31 @@ export class LinkedListService {
     return newList;
   }
 
+  reverse(): void {
+    if (!this.head || this.head.next === this.head) {
+      return;
+    }
+
+    let prev: Node | null = null;
+    let current: Node | null = this.head;
+    let next: Node | null = null;
+    let tail = this.head;
+
+    while (tail.next !== this.head) {
+      tail = tail.next!;
+    }
+
+    do {
+      next = current!.next;
+      current!.next = prev;
+      prev = current;
+      current = next;
+    } while (current !== this.head);
+
+    this.head.next = prev;
+    this.head = prev;
+  }
+
   findFirst(element: string): number {
     this.checkElement(element);
     if (!this.head) return -1;
