@@ -309,4 +309,51 @@ describe('LinkedListService', () => {
       expect(service.get(2)).toBe('C');
     });
   });
+
+  describe('clone', () => {
+    let service: LinkedListService;
+  
+    beforeEach(() => {
+      service = new LinkedListService();
+    });
+  
+    it('should return an empty list if the original list is empty', () => {
+      const clonedList = service.clone();
+      expect(clonedList.length()).toBe(0);
+    });
+  
+    it('should create a new list with the same elements', () => {
+      service.append('A');
+      service.append('B');
+      service.append('C');
+  
+      const clonedList = service.clone();
+  
+      expect(clonedList.length()).toBe(3);
+      expect(clonedList.get(0)).toBe('A');
+      expect(clonedList.get(1)).toBe('B');
+      expect(clonedList.get(2)).toBe('C');
+    });
+  
+    it('should not modify the original list when modifying the cloned list', () => {
+      service.append('X');
+      service.append('Y');
+  
+      const clonedList = service.clone();
+      clonedList.append('Z');
+  
+      expect(service.length()).toBe(2);
+      expect(clonedList.length()).toBe(3);
+    });
+  
+    it('should maintain circular linked list structure in the clone', () => {
+      service.append('A');
+      service.append('B');
+  
+      const clonedList = service.clone();
+      
+      expect(clonedList.get(0)).toBe('A');
+      expect(clonedList.get(1)).toBe('B');
+    });
+  });
 });
