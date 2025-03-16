@@ -206,6 +206,16 @@ export class LinkedListService {
     this.head = null;
   }
 
+  extend(otherList: LinkedListService): void {
+    if (!otherList.head) return; 
+  
+    let current = otherList.head;
+    do {
+      this.append(current.value); 
+      current = current.next!;
+    } while (current !== otherList.head);
+  }
+
   checkElement(element: string) {
     if (element.length !== 1) throw new Error('Invalid element input');
   }
