@@ -22,7 +22,7 @@
 
 ### 🔹 Run unit tests
 ```sh
-docker-compose exec app npm run test
+docker-compose exec node-server npm run test
 ```
 
 ---
